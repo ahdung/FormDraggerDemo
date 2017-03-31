@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing.Printing;
 using System.Windows.Forms;
 using AhDung.WinForm;
 
@@ -68,28 +69,69 @@ namespace AhDung
 
         private void VisitAuthorHome()
         {
-            Process.Start("http://www.cnblogs.com/ahdung/");
+            Process.Start("http://www.cnblogs.com/ahdung/p/FormDragger.html");
         }
 
-        private void 作者主页ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void btnAbout_Click(object sender, EventArgs e)
         {
             VisitAuthorHome();
         }
 
-        private void menuItem1_Click(object sender, EventArgs e)
+        private void newChild_Click(object sender, EventArgs e)
         {
             new FmTestDrag { MdiParent = this }.Show();
         }
 
-        private void menuItem9_Click(object sender, EventArgs e)
+        private void newNormal_Click(object sender, EventArgs e)
         {
             new FmTestDrag().Show();
         }
 
-        private void menuItem10_Click(object sender, EventArgs e)
+        private void newModal_Click(object sender, EventArgs e)
         {
             new FmTestDrag().ShowDialog();
         }
+
+        //private void btnShowMsgBox_Click(object sender, EventArgs e)
+        //{
+        //    MessageBox.Show("拖我试试");
+        //}
+
+        //private void miOpenFileDialog_Click(object sender, EventArgs e)
+        //{
+        //    new OpenFileDialog().ShowDialog();
+        //}
+
+        //private void miSaveFileDialog_Click(object sender, EventArgs e)
+        //{
+        //    new SaveFileDialog().ShowDialog();
+        //}
+
+        //private void miFolderBrowserDialog_Click(object sender, EventArgs e)
+        //{
+        //    new FolderBrowserDialog().ShowDialog();
+        //}
+
+        //private void miColorDialog_Click(object sender, EventArgs e)
+        //{
+        //    new ColorDialog().ShowDialog();
+        //}
+
+        //private void miFontDialog_Click(object sender, EventArgs e)
+        //{
+        //    new FontDialog().ShowDialog();
+        //}
+
+        //private void miPageSetupDialog_Click(object sender, EventArgs e)
+        //{
+        //    new PageSetupDialog() { Document = new PrintDocument() }.ShowDialog();
+        //}
+
+        //private void miPrintDialog_Click(object sender, EventArgs e)
+        //{
+        //    //todo 勾不到
+        //    new PrintDialog() { UseEXDialog = true }.ShowDialog();
+        //}
 
     }
 }

@@ -68,6 +68,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DialogDragger.cs" />
     <Compile Include="FmMDI.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -68,13 +68,22 @@ namespace AhDung
 
         private void VisitAuthorHome()
         {
-            Process.Start("http://www.cnblogs.com/ahdung/");
+            Process.Start("http://www.cnblogs.com/ahdung/p/FormDragger.html");
         }
 
-        private void 作者主页ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void btnAbout_Click(object sender, EventArgs e)
         {
             VisitAuthorHome();
         }
 
+        private void newNormal_Click(object sender, EventArgs e)
+        {
+            new FmTestDrag().Show();
+        }
+
+        private void newModal_Click(object sender, EventArgs e)
+        {
+            new FmTestDrag().ShowDialog();
+        }
     }
 }
