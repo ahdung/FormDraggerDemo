@@ -64,10 +64,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomControls\CheckableGroupBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControls\CheckGroupBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControls\IRadioControl.cs" />
+    <Compile Include="CustomControls\RadioGroupBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="DialogDragger.cs" />
     <Compile Include="FmMDI.cs">
       <SubType>Form</SubType>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -13,6 +12,7 @@ namespace AhDung.WinForm
     /// <summary>
     /// 窗体拖拽器
     /// <para>- 使窗体客户区可拖动</para>
+    /// <para>- 若多次调用Application.Run，建议在每次调用之前都启用</para>
     /// </summary>
     [SuppressUnmanagedCodeSecurity]
     public static class FormDragger
@@ -39,6 +39,7 @@ namespace AhDung.WinForm
         /// <summary>
         /// 拖拽器开关状态改变后
         /// </summary>
+        /// <para>- 注意sender为null</para>
         public static event EventHandler EnabledChanged;
 
         private static void OnEnabledChanged(EventArgs e)
@@ -58,7 +59,13 @@ namespace AhDung.WinForm
             get { return _enabled; }
             set
             {
-                if (_enabled == value) { return; }
+                //先移除再加入。这样做是允许重复Enable，
+                //因为存在多次Application.Run的情况下，每次Run都有可能会启动新
+                //线程上下文（ThreadContext），从而导致过滤器因未加入新context
+                //而失效，所以需要在每次Run之前都启用
+
+                Application.RemoveMessageFilter(_filter);
+
                 if (value)
                 {
                     if (_filter == null)
@@ -67,14 +74,50 @@ namespace AhDung.WinForm
                     }
                     Application.AddMessageFilter(_filter);
                 }
-                else
+
+                if (_enabled != value)
                 {
-                    Application.RemoveMessageFilter(_filter);
+                    _enabled = value;
+                    OnEnabledChanged(EventArgs.Empty);
                 }
-                _enabled = value;
-                OnEnabledChanged(EventArgs.Empty);
             }
         }
+
+        ///// <summary>
+        ///// 检测本消息过滤器是否还在工作
+        ///// </summary>
+        ///// <exception cref="Exception"/>
+        //private static bool FilterExists()
+        //{
+        //    if (_filter == null)
+        //    {
+        //        return false;
+        //    }
+
+        //    string formsFullName = null;
+        //    foreach (var a in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+        //    {
+        //        byte[] token;
+        //        if (a.Name == "System.Windows.Forms" && (token = a.GetPublicKeyToken()) != null && token.Length != 0)
+        //        {
+        //            formsFullName = a.FullName;
+        //            break;
+        //        }
+        //    }
+
+        //    var type = Type.GetType("System.Windows.Forms.Application+ThreadContext, " + formsFullName, true);
+        //    var crrThreadContext = type.GetMethod("FromCurrent", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null);
+        //    if (crrThreadContext != null)
+        //    {
+        //        var filterArr = type.GetField("messageFilters", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(crrThreadContext);
+        //        if (filterArr != null)
+        //        {
+        //            return ((ArrayList)filterArr).Contains(_filter);
+        //        }
+        //    }
+
+        //    return false;
+        //}
 
         static List<Control> _excludeControls;
 
@@ -102,7 +145,10 @@ namespace AhDung.WinForm
                         if ((int)m.WParam != 1) { break; }//仅处理单纯的左键单击
 
                         var c = Control.FromHandle(m.HWnd);
-                        if (c != null && CanDrag(c, (point = GetPoint(m.LParam))))
+                        if (c != null && (
+                               CanDrag(c, point = GetPoint(m.LParam))
+                            || CanDrag(c.GetChildAtPoint(point), point))//支持自定义容器控件
+                            )
                         {
                             return DoDrag(c, point, true);
                         }
@@ -187,13 +233,13 @@ namespace AhDung.WinForm
         /// </summary>
         private static bool CanDrag(Control c, Point pt)
         {
-            if (_excludeControls != null && _excludeControls.Contains(c))
+            if (c == null || _excludeControls != null && _excludeControls.Contains(c))
             {
                 return false;
             }
 
             if (c is Form
-               || (c is Label && !(c is LinkLabel))
+               || c is Label && !(c is LinkLabel)
                || c is Panel
                || c is GroupBox
                || c is PictureBox
@@ -255,6 +301,11 @@ namespace AhDung.WinForm
             if (c is DataGridView)
             {
                 return ((DataGridView)c).HitTest(pt.X, pt.Y).Type == DataGridViewHitTestType.None;
+            }
+
+            if (c is DataGrid)
+            {
+                return ((DataGrid)c).HitTest(pt).Type == DataGrid.HitTestType.None;
             }
 
             return false;

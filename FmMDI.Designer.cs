@@ -187,6 +187,10 @@
             this.contextMenu1 = new System.Windows.Forms.ContextMenu();
             this.menuItem7 = new System.Windows.Forms.MenuItem();
             this.menuItem8 = new System.Windows.Forms.MenuItem();
+            this.checkGroupBox1 = new AhDung.WinForm.Controls.CheckGroupBox();
+            this.button11 = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -213,11 +217,14 @@
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.checkGroupBox1.GroupBoxControl.SuspendLayout();
+            this.checkGroupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.checkGroupBox1);
             this.panel1.Controls.Add(this.label11);
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.treeView1);
@@ -247,16 +254,16 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(148, 113);
+            this.label11.Location = new System.Drawing.Point(121, 114);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(113, 12);
+            this.label11.Size = new System.Drawing.Size(95, 12);
             this.label11.TabIndex = 32;
-            this.label11.Text = "↑ dgv深色区也可拖";
+            this.label11.Text = "↑dgv深色区可拖";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(462, 241);
+            this.label2.Location = new System.Drawing.Point(491, 242);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(113, 12);
             this.label2.TabIndex = 32;
@@ -265,7 +272,7 @@
             // treeView1
             // 
             this.treeView1.CheckBoxes = true;
-            this.treeView1.Location = new System.Drawing.Point(300, 90);
+            this.treeView1.Location = new System.Drawing.Point(329, 91);
             this.treeView1.Name = "treeView1";
             treeNode9.Name = "节点1";
             treeNode9.Text = "节点1";
@@ -294,7 +301,7 @@
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("宋体", 14F);
             this.label10.ForeColor = System.Drawing.Color.Red;
-            this.label10.Location = new System.Drawing.Point(298, 186);
+            this.label10.Location = new System.Drawing.Point(327, 187);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(128, 19);
             this.label10.TabIndex = 4;
@@ -304,7 +311,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("宋体", 16F);
-            this.label9.Location = new System.Drawing.Point(596, 9);
+            this.label9.Location = new System.Drawing.Point(621, 8);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(153, 22);
             this.label9.TabIndex = 4;
@@ -313,7 +320,7 @@
             // trackBar1
             // 
             this.trackBar1.AutoSize = false;
-            this.trackBar1.Location = new System.Drawing.Point(455, 183);
+            this.trackBar1.Location = new System.Drawing.Point(484, 184);
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(135, 27);
             this.trackBar1.TabIndex = 30;
@@ -334,7 +341,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(167, 62);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(200, 62);
             this.tableLayoutPanel1.TabIndex = 29;
             // 
             // button10
@@ -357,7 +364,7 @@
             // 
             // button13
             // 
-            this.button13.Location = new System.Drawing.Point(87, 34);
+            this.button13.Location = new System.Drawing.Point(103, 34);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(31, 23);
             this.button13.TabIndex = 0;
@@ -367,7 +374,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(87, 1);
+            this.label8.Location = new System.Drawing.Point(103, 1);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(29, 12);
             this.label8.TabIndex = 4;
@@ -377,7 +384,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(300, 5);
+            this.tabControl1.Location = new System.Drawing.Point(329, 6);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(149, 79);
@@ -445,7 +452,7 @@
             // 
             // splitContainer1
             // 
-            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer1.Location = new System.Drawing.Point(121, 142);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -458,8 +465,8 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.button7);
             this.splitContainer1.Panel2.Controls.Add(this.label3);
-            this.splitContainer1.Size = new System.Drawing.Size(167, 49);
-            this.splitContainer1.SplitterDistance = 55;
+            this.splitContainer1.Size = new System.Drawing.Size(200, 49);
+            this.splitContainer1.SplitterDistance = 65;
             this.splitContainer1.TabIndex = 27;
             // 
             // button6
@@ -500,7 +507,7 @@
             // 
             // propertyGrid1
             // 
-            this.propertyGrid1.Location = new System.Drawing.Point(455, 4);
+            this.propertyGrid1.Location = new System.Drawing.Point(484, 5);
             this.propertyGrid1.Name = "propertyGrid1";
             this.propertyGrid1.SelectedObject = this.button1;
             this.propertyGrid1.Size = new System.Drawing.Size(135, 173);
@@ -519,7 +526,7 @@
             // 
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(300, 208);
+            this.pictureBox1.Location = new System.Drawing.Point(329, 209);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(149, 51);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -602,7 +609,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(121, 27);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(167, 81);
+            this.dataGridView1.Size = new System.Drawing.Size(93, 81);
             this.dataGridView1.TabIndex = 22;
             // 
             // Column1
@@ -648,7 +655,7 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(765, 6);
+            this.progressBar1.Location = new System.Drawing.Point(789, 7);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(86, 23);
             this.progressBar1.TabIndex = 4;
@@ -687,9 +694,9 @@
             this.panel2.Controls.Add(this.toolBar2);
             this.panel2.Controls.Add(this.toolStrip2);
             this.panel2.Controls.Add(this.menuStrip2);
-            this.panel2.Location = new System.Drawing.Point(597, 35);
+            this.panel2.Location = new System.Drawing.Point(625, 35);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(279, 224);
+            this.panel2.Size = new System.Drawing.Size(251, 224);
             this.panel2.TabIndex = 1;
             // 
             // radioButton1
@@ -711,7 +718,7 @@
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox2.Size = new System.Drawing.Size(164, 80);
+            this.textBox2.Size = new System.Drawing.Size(136, 80);
             this.textBox2.TabIndex = 11;
             this.textBox2.Text = "滚动条无效时\r\n也可以拖";
             this.textBox2.WordWrap = false;
@@ -745,7 +752,7 @@
             this.toolStripSplitButton4});
             this.statusStrip2.Location = new System.Drawing.Point(0, 177);
             this.statusStrip2.Name = "statusStrip2";
-            this.statusStrip2.Size = new System.Drawing.Size(277, 23);
+            this.statusStrip2.Size = new System.Drawing.Size(249, 23);
             this.statusStrip2.TabIndex = 8;
             this.statusStrip2.Text = "statusStrip2";
             // 
@@ -800,7 +807,7 @@
             this.statusBarPanel5,
             this.statusBarPanel6});
             this.statusBar2.ShowPanels = true;
-            this.statusBar2.Size = new System.Drawing.Size(277, 22);
+            this.statusBar2.Size = new System.Drawing.Size(249, 22);
             this.statusBar2.TabIndex = 9;
             this.statusBar2.Text = "statusBar2";
             // 
@@ -809,7 +816,7 @@
             this.statusBarPanel4.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
             this.statusBarPanel4.Name = "statusBarPanel4";
             this.statusBarPanel4.Text = "可拖";
-            this.statusBarPanel4.Width = 121;
+            this.statusBarPanel4.Width = 93;
             // 
             // statusBarPanel5
             // 
@@ -838,7 +845,7 @@
             this.toolBar2.Location = new System.Drawing.Point(0, 50);
             this.toolBar2.Name = "toolBar2";
             this.toolBar2.ShowToolTips = true;
-            this.toolBar2.Size = new System.Drawing.Size(277, 28);
+            this.toolBar2.Size = new System.Drawing.Size(249, 28);
             this.toolBar2.TabIndex = 7;
             this.toolBar2.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             // 
@@ -888,7 +895,7 @@
             this.toolStripProgressBar2});
             this.toolStrip2.Location = new System.Drawing.Point(0, 25);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(277, 25);
+            this.toolStrip2.Size = new System.Drawing.Size(249, 25);
             this.toolStrip2.TabIndex = 6;
             this.toolStrip2.Text = "toolStrip2";
             // 
@@ -1013,7 +1020,7 @@
             this.toolStripMenuItem5});
             this.menuStrip2.Location = new System.Drawing.Point(0, 0);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(277, 25);
+            this.menuStrip2.Size = new System.Drawing.Size(249, 25);
             this.menuStrip2.TabIndex = 2;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -1063,7 +1070,7 @@
             // button2
             // 
             this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(464, 210);
+            this.button2.Location = new System.Drawing.Point(493, 211);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(100, 23);
             this.button2.TabIndex = 0;
@@ -1500,6 +1507,51 @@
             this.menuItem8.Index = 1;
             this.menuItem8.Text = "bbbbb";
             // 
+            // checkGroupBox1
+            // 
+            // 
+            // checkGroupBox1.GroupBoxControl
+            // 
+            this.checkGroupBox1.GroupBoxControl.Controls.Add(this.radioButton2);
+            this.checkGroupBox1.GroupBoxControl.Controls.Add(this.button11);
+            this.checkGroupBox1.GroupBoxControl.Controls.Add(this.label12);
+            this.checkGroupBox1.GroupBoxControl.Size = new System.Drawing.Size(101, 109);
+            this.checkGroupBox1.Location = new System.Drawing.Point(220, 27);
+            this.checkGroupBox1.Name = "checkGroupBox1";
+            this.checkGroupBox1.Size = new System.Drawing.Size(101, 109);
+            this.checkGroupBox1.TabIndex = 33;
+            this.checkGroupBox1.Text = "自定义控件";
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(22, 26);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(31, 23);
+            this.button11.TabIndex = 0;
+            this.button11.Text = "btn";
+            this.button11.UseVisualStyleBackColor = true;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(45, 59);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(29, 12);
+            this.label12.TabIndex = 4;
+            this.label12.Text = "可拖";
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Enabled = false;
+            this.radioButton2.Location = new System.Drawing.Point(8, 83);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(53, 16);
+            this.radioButton2.TabIndex = 12;
+            this.radioButton2.TabStop = true;
+            this.radioButton2.Text = "rdBtn";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            // 
             // FmMDI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1559,6 +1611,10 @@
             this.statusStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.checkGroupBox1.GroupBoxControl.ResumeLayout(false);
+            this.checkGroupBox1.GroupBoxControl.PerformLayout();
+            this.checkGroupBox1.ResumeLayout(false);
+            this.checkGroupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1709,5 +1765,9 @@
         private System.Windows.Forms.ToolStripButton btnChild;
         private System.Windows.Forms.ToolStripButton btnNormal;
         private System.Windows.Forms.ToolStripButton btnModal;
+        private WinForm.Controls.CheckGroupBox checkGroupBox1;
+        private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Label label12;
     }
 }
