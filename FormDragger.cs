@@ -27,14 +27,7 @@ namespace AhDung.WinForm
         /// </summary>
         public static event EventHandler<FormDraggingCancelEventArgs> Dragging;
 
-        private static void OnDragging(FormDraggingCancelEventArgs e)
-        {
-            var handler = Dragging;
-            if (handler != null)
-            {
-                handler(null, e);
-            }
-        }
+        private static void OnDragging(FormDraggingCancelEventArgs e) => Dragging?.Invoke(null, e);
 
         /// <summary>
         /// 拖拽器开关状态改变后
@@ -42,21 +35,14 @@ namespace AhDung.WinForm
         /// <para>- 注意sender为null</para>
         public static event EventHandler EnabledChanged;
 
-        private static void OnEnabledChanged(EventArgs e)
-        {
-            var handler = EnabledChanged;
-            if (handler != null)
-            {
-                handler(null, e);
-            }
-        }
+        private static void OnEnabledChanged(EventArgs e) => EnabledChanged?.Invoke(null, e);
 
         /// <summary>
         /// 获取或设置是否启用拖拽器
         /// </summary>
         public static bool Enabled
         {
-            get { return _enabled; }
+            get => _enabled;
             set
             {
                 //先移除再加入。这样做是允许重复Enable，
@@ -124,10 +110,7 @@ namespace AhDung.WinForm
         /// <summary>
         /// 例外控件
         /// </summary>
-        public static List<Control> ExcludeControls
-        {
-            get { return _excludeControls ?? (_excludeControls = new List<Control>()); }
-        }
+        public static List<Control> ExcludeControls => _excludeControls ?? (_excludeControls = new List<Control>());
 
         /// <summary>
         /// 左键单击消息过滤器
@@ -213,11 +196,11 @@ namespace AhDung.WinForm
                     return false;
                 }
                 //当作为MDI子窗体且最大化时，拖MDI主窗体
-                if (form.WindowState == FormWindowState.Maximized)
+                if (form.WindowState == FormWindowState.Maximized || !form.TopLevel && form.Dock == DockStyle.Fill)
                 {
-                    form = form.MdiParent ?? form;
+                    form = form.MdiParent ?? form.ParentForm ?? form;
                 }
-                SendMessage(form.Handle, 0xA1, (IntPtr)2, IntPtr.Zero);
+                SendMessage(form.Handle, 0xA1/*WM_NCLBUTTONDOWN*/, (IntPtr)2, IntPtr.Zero);
                 return true;
             }
             catch
@@ -251,11 +234,11 @@ namespace AhDung.WinForm
                 return true;
             }
 
-            if (c is LinkLabel)
+            if (c is LinkLabel linkLabel)
             {
                 //若点到链接部分且链接可用则不拦截
                 //取State优于调用PointInLink
-                foreach (LinkLabel.Link link in ((LinkLabel)c).Links)
+                foreach (LinkLabel.Link link in linkLabel.Links)
                 {
                     if (_linkState == null)
                     {
@@ -270,45 +253,45 @@ namespace AhDung.WinForm
                 return true;
             }
 
-            if (c is ToolStrip)
+            if (c is ToolStrip strip)
             {
-                var item = ((ToolStrip)c).GetItemAt(pt);
+                var item = strip.GetItemAt(pt);
                 if (item == null
                     || !item.Enabled
                     || item is ToolStripSeparator
-                    || (item is ToolStripLabel && !((ToolStripLabel)item).IsLink))
+                    || (item is ToolStripLabel label && !label.IsLink))
                 {
                     return true;
                 }
                 return false;
             }
 
-            if (c is ToolBar)
+            if (c is ToolBar bar)
             {
                 //判断鼠标是否点击在按钮上
                 var ptPoint = GCHandle.Alloc((POINT)(pt), GCHandleType.Pinned);
-                var index = (int)SendMessage(c.Handle, (0x400 + 69)/*TB_HITTEST */, IntPtr.Zero, ptPoint.AddrOfPinnedObject());
+                var index = (int)SendMessage(bar.Handle, (0x400 + 69)/*TB_HITTEST */, IntPtr.Zero, ptPoint.AddrOfPinnedObject());
                 ptPoint.Free();
 
                 //若点击在按钮上且当按钮可用时则不拦截
-                if (index >= 0 && ((ToolBar)c).Buttons[index].Enabled)
+                if (index >= 0 && bar.Buttons[index].Enabled)
                 {
                     return false;
                 }
                 return true;
             }
 
-            if (c is DataGridView)
+            if (c is DataGridView dgv)
             {
-                return ((DataGridView)c).HitTest(pt.X, pt.Y).Type == DataGridViewHitTestType.None;
+                return dgv.HitTest(pt.X, pt.Y).Type == DataGridViewHitTestType.None;
             }
 
-            if (c is DataGrid)
+            if (c is DataGrid grid)
             {
-                return ((DataGrid)c).HitTest(pt).Type == DataGrid.HitTestType.None;
+                return grid.HitTest(pt).Type == DataGrid.HitTestType.None;
             }
 
-            return false;
+            return !c.CanSelect;
         }
 
         #region Win32 API
@@ -384,6 +367,7 @@ namespace AhDung.WinForm
         #endregion
     }
 
+    /// <inheritdoc />
     /// <summary>
     /// 窗体拖拽取消事件参数
     /// </summary>

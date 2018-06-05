@@ -17,6 +17,7 @@ namespace AhDung
 
             FormDragger.Enabled = true;//启用拖拽器
             Application.Run(new FmMDI());
+            //Application.Run(new FmTabMDI());
         }
     }
 }
