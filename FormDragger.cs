@@ -80,18 +80,7 @@ namespace AhDung.WinForm
         //        return false;
         //    }
 
-        //    string formsFullName = null;
-        //    foreach (var a in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
-        //    {
-        //        byte[] token;
-        //        if (a.Name == "System.Windows.Forms" && (token = a.GetPublicKeyToken()) != null && token.Length != 0)
-        //        {
-        //            formsFullName = a.FullName;
-        //            break;
-        //        }
-        //    }
-
-        //    var type = Type.GetType("System.Windows.Forms.Application+ThreadContext, " + formsFullName, true);
+        //    var type = Assembly.GetAssembly(typeof(Application)).GetType("System.Windows.Forms.Application+ThreadContext");
         //    var crrThreadContext = type.GetMethod("FromCurrent", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null);
         //    if (crrThreadContext != null)
         //    {
@@ -269,7 +258,7 @@ namespace AhDung.WinForm
             if (c is ToolBar bar)
             {
                 //判断鼠标是否点击在按钮上
-                var ptPoint = GCHandle.Alloc((POINT)(pt), GCHandleType.Pinned);
+                var ptPoint = GCHandle.Alloc((POINT)pt, GCHandleType.Pinned);
                 var index = (int)SendMessage(bar.Handle, (0x400 + 69)/*TB_HITTEST */, IntPtr.Zero, ptPoint.AddrOfPinnedObject());
                 ptPoint.Free();
 
@@ -376,25 +365,25 @@ namespace AhDung.WinForm
         /// <summary>
         /// 获取点击控件
         /// </summary>
-        public Control Control { get; private set; }
+        public Control Control { get; }
 
         /// <summary>
         /// 获取鼠标位置
         /// <para>- 取自点击消息产生时的lParam</para>
         /// <para>- 当IsClientArea = true时，相对Control的客户区坐标，否则相对屏幕坐标</para>
         /// </summary>
-        public Point MousePosition { get; private set; }
+        public Point MousePosition { get; }
 
         /// <summary>
         /// 是否控件客户区
         /// </summary>
-        public bool IsClientArea { get; private set; }
+        public bool IsClientArea { get; }
 
         public FormDraggingCancelEventArgs(Control c, Point point, bool isClientArea)
         {
-            this.Control = c;
-            this.MousePosition = point;
-            this.IsClientArea = isClientArea;
+            Control = c;
+            MousePosition = point;
+            IsClientArea = isClientArea;
         }
     }
 }
