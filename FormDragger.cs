@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Text;
 using System.Windows.Forms;
 
 namespace AhDung.WinForm
@@ -112,17 +113,44 @@ namespace AhDung.WinForm
                 switch (m.Msg)
                 {
                     case 0x201://WM_LBUTTONDOWN
-                        //Debug.WriteLine(m.HWnd.ToString("X8") + "\t" + m.WParam + "\t" + GetPoint(m.LParam));
+                        //System.Diagnostics.Debug.WriteLine(m.HWnd.ToString("X8") + "\t" + m.WParam + "\t" + GetPoint(m.LParam));
 
                         if ((int)m.WParam != 1) { break; }//仅处理单纯的左键单击
 
+                        point = GetPoint(m.LParam);
                         var c = Control.FromHandle(m.HWnd);
-                        if (c != null && (
-                               CanDrag(c, point = GetPoint(m.LParam))
-                            || CanDrag(c.GetChildAtPoint(point), point))//支持自定义容器控件
-                            )
+
+                        if (c != null)
                         {
-                            return DoDrag(c, point, true);
+                            if (CanDrag(c, point)
+                                || c is UserControl && CanDrag(c.GetChildAtPoint(point), point)) //支持自定义容器控件)
+                            {
+                                return DoDrag(c, point, true);
+                            }
+                        }
+                        else
+                        {
+                            var className = GetClassName(m.HWnd);
+
+                            //标头控件。如ListView的标题栏
+                            if (string.Equals("SysHeader32", className, StringComparison.OrdinalIgnoreCase))
+                            {
+                                var info = new HDHITTESTINFO { pt = (POINT)point };
+                                var hInfo = GCHandle.Alloc(info, GCHandleType.Pinned);
+                                SendMessage(m.HWnd, 0x1206/*HDM_HITTEST*/, IntPtr.Zero, hInfo.AddrOfPinnedObject());
+                                info = (HDHITTESTINFO)hInfo.Target;
+                                hInfo.Free();
+
+                                //当点到非列头（右侧）或列头不用来交互（如点击排序）时执行拖动
+                                if (info.flags == 1/*HHT_NOWHERE*/
+                                    || info.flags == 2/*HHT_ONHEADER*/ && !HasStyle(m.HWnd, 2/*HDS_BUTTONS*/))
+                                {
+                                    //标头控件并未封装到.net中，所以FromHandle会得到null，这里取标头控件所在的父控件，
+                                    //通常就是ListView，所以其实point是相对于标头控件而不是ListView，
+                                    //只不过因为标头控件往往是在LiveView的顶部，所以应该不会引起问题
+                                    return DoDrag(Control.FromChildHandle(m.HWnd), point, true);
+                                }
+                            }
                         }
                         break;
 
@@ -280,20 +308,22 @@ namespace AhDung.WinForm
                 return grid.HitTest(pt).Type == DataGrid.HitTestType.None;
             }
 
-            return !c.CanSelect;
+            if (c.Parent is UpDownBase)
+            {
+                return false;
+            }
+
+            return !c.CanSelect; // || HasStyle(c.Handle, 0x10000/*WS_EX_CONTROLPARENT*/, true);加上这个有问题，对有Spliter的控件如PropertyGrid不能区分Spliter
         }
 
         #region Win32 API
 
         // ReSharper disable MemberCanBePrivate.Local
         // ReSharper disable FieldCanBeMadeReadOnly.Local
-        private static Point GetPoint(IntPtr lParam)
-        {
-            return new Point(unchecked((int)(long)lParam));
-        }
+        static Point GetPoint(IntPtr lParam) => new Point(unchecked((int)(long)lParam));
 
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool GetScrollBarInfo(IntPtr hwnd, int idObject, ref SCROLLBARINFO psbi);
+        static extern bool GetScrollBarInfo(IntPtr hwnd, int idObject, ref SCROLLBARINFO psbi);
 
         static readonly int SizeOfSCROLLBARINFO = Marshal.SizeOf(typeof(SCROLLBARINFO));
 
@@ -318,16 +348,45 @@ namespace AhDung.WinForm
         }
 
         [DllImport("user32.dll")]
-        private static extern int GetMenuState(IntPtr hMenu, int uId, int uFlags);
+        static extern int GetMenuState(IntPtr hMenu, int uId, int uFlags);
 
         [DllImport("user32.dll")]
-        private static extern IntPtr GetMenu(IntPtr hWnd);
+        static extern IntPtr GetMenu(IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        private static extern int MenuItemFromPoint(IntPtr hWnd, IntPtr hMenu, POINT ptScreen);
+        static extern int MenuItemFromPoint(IntPtr hWnd, IntPtr hMenu, POINT ptScreen);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+        static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+
+        static string GetClassName(IntPtr hWnd)
+        {
+            const int MaxClassNameLength = 256;
+            var sb = new StringBuilder(MaxClassNameLength);
+            if (GetClassName(hWnd, sb, MaxClassNameLength) == 0)
+            {
+                throw new Win32Exception();
+            }
+            return sb.ToString();
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, EntryPoint = "GetWindowLong")]
+        static extern IntPtr GetWindowLong32(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, EntryPoint = "GetWindowLongPtr")]
+        static extern IntPtr GetWindowLongPtr64(IntPtr hWnd, int nIndex);
+
+        static int GetWindowStyle(IntPtr hWnd, bool isExStyle = false)
+        {
+            var nIndex = isExStyle ? -20/*GWL_EXSTYLE*/: -16/*GWL_STYLE*/;
+            return unchecked((int)(long)(IntPtr.Size == 4 ? GetWindowLong32(hWnd, nIndex) : GetWindowLongPtr64(hWnd, nIndex)));
+        }
+
+        static bool HasStyle(IntPtr hWnd, int style, bool isExStyle = false) =>
+            (GetWindowStyle(hWnd, isExStyle) & style) == style;
 
         [StructLayout(LayoutKind.Sequential)]
         private struct POINT
@@ -335,21 +394,21 @@ namespace AhDung.WinForm
             public int X;
             public int Y;
 
-            public static explicit operator POINT(Point pt)
-            {
-                return new POINT { X = pt.X, Y = pt.Y };
-            }
+            public static explicit operator POINT(Point pt) => new POINT { X = pt.X, Y = pt.Y };
 
-            public static explicit operator Point(POINT pt)
-            {
-                return new Point(pt.X, pt.Y);
-            }
+            public static explicit operator Point(POINT pt) => new Point(pt.X, pt.Y);
 
-            public override string ToString()
-            {
-                return X + ", " + Y;
-            }
+            public override string ToString() => $"{X}, {Y}";
         }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct HDHITTESTINFO
+        {
+            public POINT pt;
+            public uint flags;
+            public int iItem;
+        }
+
         // ReSharper restore FieldCanBeMadeReadOnly.Local
         // ReSharper restore MemberCanBePrivate.Local
 
